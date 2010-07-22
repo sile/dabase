@@ -2,7 +2,6 @@
 #define BUILDER_H
 
 #include <cstdio>
-#include <cstring>
 #include "node_allocator.h"
 #include "char_stream.h"
 #include "char_stream_vector.h"
@@ -10,10 +9,11 @@
 class Builder {
 public:
   Builder(const char* filepath) 
-    : csv(filepath), node_size(csv.size()*15) { // XXX: ノード用の配列のサイズはテキトウに決め打ち (危険!!!)
+    : csv(filepath), id(0), node_size(csv.size()*15) { // XXX: ノード用の配列のサイズはテキトウに決め打ち (危険!!!)
     base = new int[node_size];
     chck = new int[node_size];
-    memset(chck, -1, sizeof(int)*node_size);
+    for(int i=0; i < node_size; i++)
+      chck[i] = -1;
   }
 
   ~Builder() {
@@ -44,7 +44,7 @@ private:
     if(end-beg == 1) {
       for(; csv[beg].prev() != '\0'; csv[beg].read())
         root_node = set_node(root_node, alloc.allocate(csv[beg].peek()), csv[beg].peek());
-      base[root_node] = -((csv[beg].ham() << 16) + csv[beg].spam());
+      base[root_node] = --id;  
       return;
     }
 
@@ -80,6 +80,7 @@ private:
 
 private:
   CharStreamVector csv;
+  int id;
   int node_size;
   int* base;
   int* chck;
