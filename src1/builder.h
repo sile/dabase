@@ -10,7 +10,7 @@
 class Builder {
 public:
   Builder(const char* filepath) 
-    : csv(filepath), id(0), node_size(csv.size()*15) { // XXX: ノード用の配列のサイズはテキトウに決め打ち (危険!!!)
+    : csv(filepath), node_size(csv.size()*15) { // XXX: ノード用の配列のサイズはテキトウに決め打ち (危険!!!)
     base = new int[node_size];
     chck = new int[node_size];
     memset(chck, 0, sizeof(int)*node_size);
@@ -30,7 +30,7 @@ public:
     FILE* f = fopen(filepath, "wb");
     
     if(node_size > 0xFF)
-      while(chck[node_size-0xFF]==-1)
+      while(chck[node_size-0xFF]==0)
         node_size--;
     
     fwrite(&node_size, sizeof(unsigned), 1, f);
@@ -44,7 +44,7 @@ private:
     if(end-beg == 1) {
       for(; csv[beg].prev() != '\0'; csv[beg].read())
         root_node = set_node(root_node, alloc.allocate(csv[beg].peek()), csv[beg].peek());
-      base[root_node] = --id;  
+      base[root_node] = -((csv[beg].ham() << 16) + csv[beg].spam());
       return;
     }
 
@@ -80,7 +80,6 @@ private:
 
 private:
   CharStreamVector csv;
-  int id;
   int node_size;
   int* base;
   int* chck;
