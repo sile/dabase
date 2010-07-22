@@ -13,7 +13,7 @@ public:
     : csv(filepath), node_size(csv.size()*15) { // XXX: ノード用の配列のサイズはテキトウに決め打ち (危険!!!)
     base = new int[node_size];
     chck = new int[node_size];
-    memset(chck, 0, sizeof(int)*node_size);
+    memset(chck, -1, sizeof(int)*node_size);
   }
 
   ~Builder() {
@@ -30,7 +30,7 @@ public:
     FILE* f = fopen(filepath, "wb");
     
     if(node_size > 0xFF)
-      while(chck[node_size-0xFF]==0)
+      while(chck[node_size-0xFF]==-1)
         node_size--;
     
     fwrite(&node_size, sizeof(unsigned), 1, f);
