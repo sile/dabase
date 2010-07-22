@@ -2,6 +2,7 @@
 #define BUILDER_H
 
 #include <cstdio>
+#include <cstring>
 #include "node_allocator.h"
 #include "char_stream.h"
 #include "char_stream_vector.h"
@@ -12,8 +13,7 @@ public:
     : csv(filepath), id(0), node_size(csv.size()*15) { // XXX: ノード用の配列のサイズはテキトウに決め打ち (危険!!!)
     base = new int[node_size];
     chck = new int[node_size];
-    for(int i=0; i < node_size; i++)
-      chck[i] = -1;   // CHECK配列の初期値は-1としておく (0~255以外の値なら何でも良い)
+    memset(chck, 0, sizeof(int)*node_size);
   }
 
   ~Builder() {
