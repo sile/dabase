@@ -10,5 +10,6 @@
   
   :components ((:file "package")
                (:file "node-allocator")
+               (:file "octet-stream")
                (:file "builder")
                (:file "dabase")))

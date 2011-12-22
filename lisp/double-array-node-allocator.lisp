@@ -1,12 +1,13 @@
-(defpackage dabase.node-allocator
-  (:use :common-lisp)
+(defpackage dawg.double-array.node-allocator
+  (:use :common-lisp :dawg.global)
   (:export make
-           allocate
-           node-allocator))
-(in-package :dabase.node-allocator)
+           allocate))
+(in-package :dawg.double-array.node-allocator)
 
-(deftype octet () '(unsigned-byte 8))
-(deftype array-index () '(mod #.array-total-size-limit))
+;;;;;;;;;;;;;;;
+;;; declamation
+(declaim #.*fastest*
+         (inline get-next can-allocate?))
 
 ;;;;;;;;;;;;
 ;;; constant
