@@ -54,10 +54,13 @@
                        :code code :octet-pos len :octet-len len)))
 
 (defun eos? (in)
-  (with-slots ( pos end) (the octet-stream in)
+  (with-slots (pos end) (the octet-stream in)
     (= pos end)))
 
 (defun peek (in)
+  (when (eos? in)
+    (return-from peek null-octet))
+
   (with-slots (code octet-pos octet-len) (the octet-stream in)
     (if (= octet-pos octet-len)
         (case octet-len
@@ -68,6 +71,8 @@
       (+ #b10000000 (ldb (byte 6 (* (the (mod 4) (1- octet-pos)) 6)) code)))))
 
 (defun eat (in)
+  (when (eos? in)
+    (return-from eat))
   (with-slots (src pos code octet-pos octet-len) (the octet-stream in)
     (decf octet-pos)
     (when (zerop octet-pos)

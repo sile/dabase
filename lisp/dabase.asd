@@ -12,4 +12,5 @@
                (:file "node-allocator")
                (:file "octet-stream")
                (:file "builder")
+               (:file "searcher")
                (:file "dabase")))
