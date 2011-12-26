@@ -11,6 +11,8 @@
   :components ((:file "package")
                (:file "node-allocator")
                (:file "octet-stream")
+               (:file "unicode-octet-stream")
+               (:file "byte-octet-stream")
                (:file "builder")
                (:file "searcher")
                (:file "dabase")))
