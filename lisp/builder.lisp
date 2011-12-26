@@ -9,7 +9,7 @@
   (rename-package :dabase.octet-stream :dabase.octet-stream '(:octet-stream))
   (rename-package :dabase.node-allocator :dabase.node-allocator '(:node-allocator)))
 
-(defconstant +EMPTY+ 0)
+(defconstant +EMPTY+ #xFFFFFFFF)
 
 #|
 DA & NODE
@@ -40,8 +40,8 @@ DA & NODE
 
 (defun build (entries output-file)
   (let ((da (init-da entries)))
-    (build-impl da 0 (length entries) 0)
-    (output-to-file da output-file)
+    (build-impl da 0 #1=(length entries) 0)
+    (output-to-file da #1# output-file)
     :done))
 
 (defun get-key (da index)
@@ -64,7 +64,7 @@ DA & NODE
 (defun set-node (da node-index base-node-index arc)
   (let ((next-index (+ base-node-index arc)))
     (setf (get-base da node-index) base-node-index
-          (get-chck da node-index) arc)
+          (get-chck da next-index) arc)
     next-index))
 
 #|
@@ -122,15 +122,18 @@ OUTPUT
 (defun write-uint (n byte-size out)
   (loop FOR i FROM (1- byte-size) DOWNTO 0
         DO
-        (write-byte (ldb (byte 8 (* byte-size 8)) n) out)))
+        (write-byte (ldb (byte 8 (* i 8)) n) out)))
 
-(defun output-to-file (da output-file)
+(defun output-to-file (da entry-count output-file)
   (with-open-file (out output-file :direction :output
                                    :element-type '(unsigned-byte 8)
                                    :if-exists :supersede)
-    (write-uint (length (da-nodes da)) 4 out)
-    (loop FOR n ACROSS (da-nodes da)
-          DO (write-uint n 4 out))))
+    (let ((end (+ (position-if-not (lambda (x) (= x +EMPTY+)) (da-nodes da) :from-end t) #x100)))
+      (write-uint end 4 out)
+      (write-uint entry-count 4 out)
+      (loop FOR i FROM 0 BELOW end
+            FOR n = (aref (da-nodes da) i)
+            DO (write-uint n 4 out)))))
 
 (eval-when (:compile-toplevel :load-toplevel)
   (rename-package :dabase.octet-stream :dabase.octet-stream '())
