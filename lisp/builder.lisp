@@ -128,11 +128,12 @@ OUTPUT
   (with-open-file (out output-file :direction :output
                                    :element-type '(unsigned-byte 8)
                                    :if-exists :supersede)
-    (let ((end (+ (position-if-not (lambda (x) (= x +EMPTY+)) (da-nodes da) :from-end t) #x100)))
+    (let ((end (+ (position-if-not (lambda (x) (= x +EMPTY+)) (da-nodes da) :from-end t) 
+                  #x100)))
       (write-uint end 4 out)
       (write-uint entry-count 4 out)
       (loop FOR i FROM 0 BELOW end
-            FOR n = (aref (da-nodes da) i)
+            FOR n = (node-ref da i)
             DO (write-uint n 4 out)))))
 
 (eval-when (:compile-toplevel :load-toplevel)

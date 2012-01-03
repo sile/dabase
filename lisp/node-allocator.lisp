@@ -22,6 +22,9 @@
   (prevs #()  :type (simple-array fixnum (#.+BUFFER_SIZE+)))
   (offset  0  :type array-index))
 
+(defmethod print-object ((o node-allocator) stream)
+  (print-unreadable-object (o stream :identity t :type t)))
+
 ;;;;;;;;;;;;;;;
 ;;; constructor
 (defun make ()

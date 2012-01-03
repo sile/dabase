@@ -23,7 +23,7 @@
 (defun seq-type (seq)
   (etypecase seq
     (string :string)
-    ((simple-array (unsigned-byte 8)) :bytes)))
+    ((simple-array (unsigned-byte 8)) :octets)))
 
 (defmethod make (seq &key start end)
   (make-impl (seq-type seq) seq :start start :end end))
