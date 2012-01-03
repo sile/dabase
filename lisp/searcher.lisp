@@ -2,6 +2,7 @@
   (:use :common-lisp)
   (:shadow :common-lisp get load)
   (:export load
+           element-count
            member?
            get
            each-common-prefix))
@@ -34,6 +35,9 @@
     (let ((count (read-uint 4 in)))
       (make-da :entry-count (read-uint 4 in)
                :nodes (read-nodes count in)))))
+
+(defun element-count (da)
+  (da-entry-count da))
 
 (defun base (da node)
   (ldb (byte 24 0) (aref (da-nodes da) node)))
