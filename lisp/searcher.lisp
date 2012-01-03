@@ -11,10 +11,6 @@
 (eval-when (:compile-toplevel :load-toplevel)
   (rename-package :dabase.octet-stream :dabase.octet-stream '(:octet-stream)))
 
-(defun read-uint (byte-width in)
-  (loop FOR i FROM (1- byte-width) DOWNTO 0
-        SUM (ash (read-byte in) (* i 8))))
-
 (deftype node () '(unsigned-byte 32))
 
 (defstruct da
@@ -24,6 +20,10 @@
 (defmethod print-object ((o da) stream)
   (print-unreadable-object (o stream :identity t)
     (format stream "~a ~s ~a" :da :count (da-entry-count o))))
+
+(defun read-uint (byte-width in)
+  (loop FOR i FROM (1- byte-width) DOWNTO 0
+        SUM (ash (read-byte in) (* i 8))))
 
 (defun read-nodes (count in)
   (let ((nodes (make-array count :element-type 'node)))

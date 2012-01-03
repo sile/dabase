@@ -11,9 +11,8 @@
 
 (defconstant +EMPTY+ #xFFFFFFFF)
 
-#|
-DA & NODE
-|#
+;;;;;;;;;;;;;
+;;; da & node
 (defstruct da
   (nodes #() :type (simple-array node))
   (entries #() :type simple-vector)
@@ -67,9 +66,8 @@ DA & NODE
           (get-chck da next-index) arc)
     next-index))
 
-#|
-BUILD
-|#
+;;;;;;;;;
+;;; build
 (defun end-of-same-node (da beg end)
   (loop WITH ch = (octet-stream:read (get-key da beg))
         FOR cur FROM (1+ beg) BELOW end
@@ -116,9 +114,8 @@ BUILD
       (build-leaf-case da beg root-node-index)
     (build-node-case da beg end root-node-index)))
 
-#|
-OUTPUT
-|#
+;;;;;;;;;;
+;;; output
 (defun write-uint (n byte-size out)
   (loop FOR i FROM (1- byte-size) DOWNTO 0
         DO
